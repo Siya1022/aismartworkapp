@@ -115,15 +115,13 @@ export function TaskProvider({ children }: { children: ReactNode }) {
 
   const toggleTask = useCallback((id: string) => {
     setTasks((prev) =>
-      prev.map((t) =>
-        t.id === id
-          ? {
-              ...t,
-              completed: !t.completed,
-              completedAt: !t.completed ? new Date().toISOString() : undefined,
-            }
-          : t,
-      ),
+      prev.map((t) => {
+        if (t.id !== id) return t;
+        const next: Task = { ...t, completed: !t.completed };
+        if (next.completed) next.completedAt = new Date().toISOString();
+        else delete next.completedAt;
+        return next;
+      }),
     );
   }, []);
 
